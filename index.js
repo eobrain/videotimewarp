@@ -20,12 +20,19 @@ function draw() {
 
     loadPixels();
 
-    history[frame % HEIGHT] = pixels.slice()
+    history[frame % HEIGHT] = pixels
 
     if (frame > HEIGHT) {
         for (let y = 0; y < height; y++) {
             prevPixels = history[y]
-            pixels.set(prevPixels.slice(y * width * 4, (y + 1) * width * 4), y * width * 4);
+            const lineOffset = y * width * 4
+            for (let x = 0; x < width; x++) {
+                const pixelOffset = lineOffset + x * 4
+                for (let channel = 0; channel < 4; channel++) {
+                    const i = pixelOffset + channel
+                    pixels[i] = prevPixels[i]
+                }
+            }
         }
     }
     updatePixels();
