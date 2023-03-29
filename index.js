@@ -1,7 +1,7 @@
 let capture;
 
-const WIDTH = 1280 / 4
-const HEIGHT = 960 / 4
+const WIDTH = 1280 / 2
+const HEIGHT = 960 / 2
 
 
 function setup() {
