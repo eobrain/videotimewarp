@@ -6,8 +6,8 @@
     const constraints = {
       audio: false,
       video: {
-        width: { ideal: 1280 / 2 },
-        height: { ideal: 960 / 2 }
+        width: 400,
+        height: 400
       }
     }
 
@@ -59,6 +59,7 @@
       }
       p.updatePixels()
       ++frame
+      $size.innerText = `${cameraWidth}x${cameraHeight}`
       $frame.innerText = `${frame}`
       $fps.innerText = `${p.frameRate().toFixed(2)}`
     }
@@ -66,5 +67,5 @@
 
   new p5(s,'$p5')
   defaultCanvas0.style.height = 'auto'
-  defaultCanvas0.style.width = '100%'
+  defaultCanvas0.style.width = '90vmin'
 })()
