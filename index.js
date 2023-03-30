@@ -1,4 +1,4 @@
-/* global p5 $frame $fps */
+/* global p5 defaultCanvas0 $frame $fps $size */
 
 (async () => {
   async function getCameraSize () {
@@ -33,7 +33,8 @@
       capture.hide()
     }
 
-    const history = new Array(cameraHeight)
+    const AGE = 100
+    const history = new Array(AGE)
     let frame = 0
 
     p.draw = function () {
@@ -42,11 +43,11 @@
 
       p.loadPixels()
 
-      history[frame % cameraHeight] = p.pixels.slice()
+      history[frame % AGE] = p.pixels.slice()
 
-      if (frame > cameraHeight) {
+      if (frame > AGE) {
         for (let y = 0; y < p.height; y++) {
-          const prevPixels = history[(frame + y) % cameraHeight]
+          const prevPixels = history[Math.trunc(frame + y * AGE / cameraHeight) % AGE]
           const lineOffset = y * p.width * 4
           for (let x = 0; x < p.width; x++) {
             const pixelOffset = lineOffset + x * 4
@@ -65,7 +66,7 @@
     }
   }
 
-  new p5(s,'$p5')
+  new p5(s, '$p5')
   defaultCanvas0.style.height = 'auto'
   defaultCanvas0.style.width = '90vmin'
 })()
