@@ -1,11 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
+        <title>Video Time Warp</title>
+        <meta name="viewport" content="width=device-width">
         <script src="p5.min.js"></script>
         <script src="index.js"></script>
+        <link rel="stylesheet" href="index.css">
     </head>
     <body>
         <h1>Video Time Warp</h1>
-        <p id="$frame"></p>
+        <p id="$p5"></p>
+        <table>
+            <tr><th>Frame#</th><td id="$frame"></td></tr>
+            <tr><th>Frame Rate</th><td id="$fps"></td></tr>
+        </table>
     </body>
 </html>

@@ -1,40 +1,70 @@
-let capture
+/* global p5 $frame $fps */
 
-const WIDTH = 1280 / 2
-const HEIGHT = 960 / 2
-
-function setup () {
-  createCanvas(WIDTH, HEIGHT)
-  capture = createCapture(VIDEO)
-  capture.size(WIDTH, HEIGHT)
-  capture.hide()
-}
-
-const history = new Array(HEIGHT)
-let frame = 0
-
-function draw () {
-  background(255)
-  image(capture, 0, 0, WIDTH, HEIGHT)
-
-  loadPixels()
-
-  history[frame % HEIGHT] = pixels.slice()
-
-  if (frame > HEIGHT) {
-    for (let y = 0; y < height; y++) {
-      const prevPixels = history[(frame + y) % HEIGHT]
-      const lineOffset = y * width * 4
-      for (let x = 0; x < width; x++) {
-        const pixelOffset = lineOffset + x * 4
-        for (let channel = 0; channel < 4; channel++) {
-          const i = pixelOffset + channel
-          pixels[i] = prevPixels[i]
-        }
+(async () => {
+  async function getCameraSize () {
+    // suppose we require a full HD video
+    const constraints = {
+      audio: false,
+      video: {
+        width: { ideal: 1280 / 2 },
+        height: { ideal: 960 / 2 }
       }
     }
+
+    const stream = await navigator.mediaDevices.getUserMedia(constraints)
+
+    const streamSettings = stream.getVideoTracks()[0].getSettings()
+
+    return {
+      cameraWidth: streamSettings.width,
+      cameraHeight: streamSettings.height
+    }
   }
-  updatePixels()
-  ++frame
-  $frame.innerText = `${frame}`
-}
+
+  const { cameraWidth, cameraHeight } = await getCameraSize()
+
+  const s = (p) => {
+    let capture
+
+    p.setup = function () {
+      p.createCanvas(cameraWidth, cameraHeight)
+      capture = p.createCapture(p.VIDEO)
+      capture.size(cameraWidth, cameraHeight)
+      capture.hide()
+    }
+
+    const history = new Array(cameraHeight)
+    let frame = 0
+
+    p.draw = function () {
+      p.background(255)
+      p.image(capture, 0, 0, cameraWidth, cameraHeight)
+
+      p.loadPixels()
+
+      history[frame % cameraHeight] = p.pixels.slice()
+
+      if (frame > cameraHeight) {
+        for (let y = 0; y < p.height; y++) {
+          const prevPixels = history[(frame + y) % cameraHeight]
+          const lineOffset = y * p.width * 4
+          for (let x = 0; x < p.width; x++) {
+            const pixelOffset = lineOffset + x * 4
+            for (let channel = 0; channel < 4; channel++) {
+              const i = pixelOffset + channel
+              p.pixels[i] = prevPixels[i]
+            }
+          }
+        }
+      }
+      p.updatePixels()
+      ++frame
+      $frame.innerText = `${frame}`
+      $fps.innerText = `${p.frameRate().toFixed(2)}`
+    }
+  }
+
+  new p5(s,'$p5')
+  defaultCanvas0.style.height = 'auto'
+  defaultCanvas0.style.width = '100%'
+})()
