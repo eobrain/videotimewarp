@@ -55,13 +55,18 @@
             history[Math.trunc(frame + (y * AGE) / cameraHeight) % AGE]
           const subpixelY0 = y * d
           for (let x = 0; x < p.width; x++) {
+            const xMirror = p.width - x - 1
             const subpixelX0 = x * d
+            const subpixelX0Mirror = xMirror * d
             for (let j = 0; j < d; j++) {
               const subpixelOffset = (subpixelY0 + j) * dw
               for (let i = 0; i < d; i++) {
+                const iMirror = d - i - 1
                 const index = 4 * (subpixelOffset + subpixelX0 + i)
+                const indexMirror =
+                  4 * (subpixelOffset + subpixelX0Mirror + iMirror)
                 for (let channel = 0; channel < 4; channel++) {
-                  p.pixels[index + channel] = prevPixels[index + channel]
+                  p.pixels[indexMirror + channel] = prevPixels[index + channel]
                 }
               }
             }
